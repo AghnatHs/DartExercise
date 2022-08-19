@@ -1,1 +1,1 @@
-My attempt to https://hackmd.io/@kuzmapetrovich/S1x90jWGP#Exercise-18
+My attempt to https://hackmd.io/@kuzmapetrovich/S1x90jWGP
