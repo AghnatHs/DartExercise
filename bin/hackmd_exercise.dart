@@ -353,17 +353,18 @@ void exercise18() {
     }
 
     //check diagonal
-    List<List<int>> _diagonal =
-        List.generate(1, (_list) => List.generate(3, (i) => boardData[i][i]));
     var _reversedBoardData = List.from(boardData.reversed);
-    _diagonal.add(List.generate(3, (i) => _reversedBoardData[i][i]));
+    List<List<int>> _diagonal = [
+      for (var i = 0; i < 3; i++) [boardData[i][i]],
+      for (var i = 0; i < 3; i++) [_reversedBoardData[i][i]]
+    ];  
 
-    for (List<int> _diag in _diagonal) {
-      Set _diagAsSet = _diag.toSet();
-      if (_diagAsSet.length == 1) {
-        if (_diagAsSet.contains(1)) {
+    for (List<int> d in _diagonal) {
+      Set _d = d.toSet();
+      if (_d.length == 1) {
+        if (_d.contains(1)) {
           return 'X Win d';
-        } else if (_diagAsSet.contains(2)) {
+        } else if (_d.contains(2)) {
           return 'O Win d';
         }
       }
@@ -374,9 +375,9 @@ void exercise18() {
   }
 
   List<List<int>> game = [
-    [2, 2, 1],
+    [0, 2, 2],
     [1, 2, 2],
-    [1, 0, 2]
+    [2, 0, 0]
   ];
 
   print(showWinner(boardData: game));
