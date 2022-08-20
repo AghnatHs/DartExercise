@@ -310,10 +310,10 @@ void exercise17() {
     final String hor = ' ---';
     final String vert = '|   ';
 
-    for (var i = 0; i < size+1; i++) {
+    for (var i = 0; i < size + 1; i++) {
       if (i != size) {
         print(hor * size);
-        print(vert * (size+1));
+        print(vert * (size + 1));
       } else {
         print(hor * size);
       }
@@ -324,6 +324,64 @@ void exercise17() {
   createBoard(int.parse(stdin.readLineSync()!));
 }
 
+void exercise18() {
+  // 1 for X, 2 for O
+
+  String showWinner({required List<List<int>> boardData}) {
+    //check horizontal
+    for (var row = 0; row < 3; row++) {
+      Set _hor = boardData[row].toSet();
+      if (_hor.length == 1) {
+        if (_hor.contains(1)) {
+          return 'X Win h';
+        } else if (_hor.contains(2)) {
+          return 'O Win h';
+        }
+      }
+    }
+
+    //check Vertical
+    for (var col = 0; col < 3; col++) {
+      Set _vert = List.generate(3, (j) => boardData[j][col]).toSet();
+      if (_vert.length == 1) {
+        if (_vert.contains(1)) {
+          return 'X Win v';
+        } else if (_vert.contains(2)) {
+          return 'O Win v';
+        }
+      }
+    }
+
+    //check diagonal
+    List<List<int>> _diagonal =
+        List.generate(1, (_list) => List.generate(3, (i) => boardData[i][i]));
+    var _reversedBoardData = List.from(boardData.reversed);
+    _diagonal.add(List.generate(3, (i) => _reversedBoardData[i][i]));
+
+    for (List<int> _diag in _diagonal) {
+      Set _diagAsSet = _diag.toSet();
+      if (_diagAsSet.length == 1) {
+        if (_diagAsSet.contains(1)) {
+          return 'X Win d';
+        } else if (_diagAsSet.contains(2)) {
+          return 'O Win d';
+        }
+      }
+    }
+
+    //no winner
+    return '';
+  }
+
+  List<List<int>> game = [
+    [2, 2, 1],
+    [1, 2, 2],
+    [1, 0, 2]
+  ];
+
+  print(showWinner(boardData: game));
+}
+
 void main() {
-  exercise17();
+  exercise18();
 }
