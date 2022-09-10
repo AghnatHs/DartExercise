@@ -324,18 +324,49 @@ void exercise17() {
   createBoard(int.parse(stdin.readLineSync()!));
 }
 
-void exercise18() {
+void exercise18TicTacToe() {
   // 1 for X, 2 for O
+  void drawBoard({required List<List<String>> boardData}) {
+    var size = 3;
+    final String hor = ' ---';
+    final String vert = '|';
 
-  String showWinner({required List<List<int>> boardData}) {
+    for (var i = 0; i < size + 1; i++) {
+      if (i != size) {
+        print(hor * size);
+        //print(vert * (size + 1));
+        print(
+            '${vert + boardData[i][0]}${vert + boardData[i][1]}${vert + boardData[i][2]}$vert');
+      } else {
+        print(hor * size);
+      }
+    }
+  }
+
+  bool canMove({required List<List<int>> boardData}) {
+    int counter = 0;
+    for (var row = 0; row < 3; row++) {
+      for (var i = 0; i < 3; i++) {
+        counter = boardData[row][i] != 0 ? counter + 1 : counter;
+      }
+    }
+    if (counter != 9) {
+      return true;
+    } else {
+      print('No More Moves, its a Draw.');
+      return false;
+    }
+  }
+
+  String? showWinner({required List<List<int>> boardData}) {
     //check horizontal
     for (var row = 0; row < 3; row++) {
       Set _hor = boardData[row].toSet();
       if (_hor.length == 1) {
         if (_hor.contains(1)) {
-          return 'X Win h';
+          return 'X Win (HORIZONTAL)';
         } else if (_hor.contains(2)) {
-          return 'O Win h';
+          return 'O Win (HORIZONTAL)';
         }
       }
     }
@@ -345,9 +376,9 @@ void exercise18() {
       Set _vert = List.generate(3, (j) => boardData[j][col]).toSet();
       if (_vert.length == 1) {
         if (_vert.contains(1)) {
-          return 'X Win v';
+          return 'X Win (VERTICAL)';
         } else if (_vert.contains(2)) {
-          return 'O Win v';
+          return 'O Win (VERTICAL)';
         }
       }
     }
@@ -355,34 +386,80 @@ void exercise18() {
     //check diagonal
     var _reversedBoardData = List.from(boardData.reversed);
     List<List<int>> _diagonal = [
-      for (var i = 0; i < 3; i++) [boardData[i][i]],
-      for (var i = 0; i < 3; i++) [_reversedBoardData[i][i]]
-    ];  
-
+      [for (var i = 0; i < 3; i++) boardData[i][i]],
+      [for (var i = 0; i < 3; i++) _reversedBoardData[i][i]]
+    ];
     for (List<int> d in _diagonal) {
       Set _d = d.toSet();
       if (_d.length == 1) {
         if (_d.contains(1)) {
-          return 'X Win d';
+          return 'X Win (DIAGONAL)';
         } else if (_d.contains(2)) {
-          return 'O Win d';
+          return 'O Win (DIAGONAL)';
         }
       }
     }
 
     //no winner
-    return '';
+    return null;
   }
 
+  // Data
   List<List<int>> game = [
-    [0, 2, 2],
-    [1, 2, 2],
-    [2, 0, 0]
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
   ];
+  List<List<String>> translatedGame = [
+    ['   ', '   ', '   '],
+    ['   ', '   ', '   '],
+    ['   ', '   ', '   ']
+  ];
+  var winner;
+  var row;
+  var column;
+  List<int> xInput;
+  List<int> oInput;
 
-  print(showWinner(boardData: game));
+  // Get input from player
+  while (true) {
+    // X
+    stdout.write('Player X : Rows, Column => ');
+    xInput = stdin.readLineSync()!.split(' ').map((a) => int.parse(a)).toList();
+    row = xInput[0] - 1;
+    column = xInput[1] - 1;
+    if (game[row][column] == 0) {
+      game[row][column] = 1;
+      translatedGame[row][column] = ' X ';
+    }
+
+    drawBoard(boardData: translatedGame);
+    if (!canMove(boardData: game)) break;
+    winner = showWinner(boardData: game);
+    if (winner != null) {
+      print(winner);
+      break;
+    }
+
+    //O
+    stdout.write('Player O : Rows, Column => ');
+    oInput = stdin.readLineSync()!.split(' ').map((a) => int.parse(a)).toList();
+    row = oInput[0] - 1;
+    column = oInput[1] - 1;
+    if (game[row][column] == 0) {
+      game[row][column] = 2;
+      translatedGame[row][column] = ' O ';
+    }
+    drawBoard(boardData: translatedGame);
+    if (!canMove(boardData: game)) break;
+    winner = showWinner(boardData: game);
+    if (winner != null) {
+      print(winner);
+      break;
+    }
+  }
 }
 
 void main() {
-  exercise18();
+  exercise18TicTacToe();
 }
