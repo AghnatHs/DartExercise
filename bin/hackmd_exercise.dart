@@ -460,6 +460,56 @@ void exercise18TicTacToe() {
   }
 }
 
+void exercise21() {
+  stdout.write(
+      'Think number between 0 - 100\n too high too low type "high" or "low" or  "correct"\n');
+  Random random = Random();
+  int attempt = 0;
+  int min = 0;
+  int max = 100;
+  int compGuess = 0;
+
+  String user;
+  while (true) {
+    attempt += 1;
+    compGuess = min + random.nextInt(max - min);
+    stdout.write('$compGuess ? => ');
+    user = stdin.readLineSync()!.toLowerCase();
+
+    if (user == 'high') {
+      max = compGuess;
+    } else if (user == 'low') {
+      min = compGuess;
+    } else if (user == 'correct') {
+      print('Number Guessed $compGuess ; Attempt $attempt');
+      break;
+    }
+  }
+}
+
+void exercise22() {
+  int largestOfThree(List<int> numbers) {
+    int a = numbers[0];
+    int b = numbers[1];
+    int c = numbers[2];
+
+    if (a >= b && a >= c) {
+      return a;
+    } else if (b >= a && b >= c) {
+      return b;
+    } else if (c >= a && c >= b) {
+      return c;
+    } else {
+      return 0;
+    }
+  }
+
+  stdout.write('enter 3 number : ');
+  List<int> user =
+      stdin.readLineSync()!.split(' ').map((a) => int.parse(a)).toList();
+  print(largestOfThree(user));
+}
+
 void main() {
-  exercise18TicTacToe();
+  exercise22();
 }
