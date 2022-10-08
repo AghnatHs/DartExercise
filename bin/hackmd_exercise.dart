@@ -510,6 +510,61 @@ void exercise22() {
   print(largestOfThree(user));
 }
 
+void exercise23() {
+  var n = 50;
+  final Random random = Random();
+
+  String dir = 'bin/sowpods.txt';
+  File file = File(dir);
+
+  List<String> words = file.readAsLinesSync();
+
+  do {
+    print(words[random.nextInt(words.length)]);
+    n -= 1;
+  } while (n > 0);
+}
+
+void exercise24() {
+  // Hangman I
+  bool isGuessed = false;
+  String user;
+  int attempt = 0;
+
+  String word = 'EVAPORATE';
+  List<String> wordAsLetter = word.split('');
+  List<String> guessedLetter = List.generate(wordAsLetter.length, (empty) => '_');
+
+  while (!isGuessed) {
+    attempt += 1;
+    stdout.write('Guess the Word=> ');
+    user = stdin.readLineSync()!.toUpperCase();
+
+    if (user == word) {
+      print('-------------\nGUESSED in $attempt try\nThe Word is $word');
+      break;
+    } else if (user.length > 1 || !wordAsLetter.contains(user)) {
+      print('nah');
+    } else if (wordAsLetter.contains(user)) {
+      if (guessedLetter.contains(user)) {
+        print('you already guessed this right?');
+      } else {
+        for (var i = 0; i < wordAsLetter.length; i++) {
+          if (wordAsLetter[i] == user) {
+            guessedLetter[i] = wordAsLetter[i];
+          }
+        }
+        print(guessedLetter.join(' '));
+      }
+    }
+
+    if (guessedLetter.join('') == wordAsLetter.join('')) {
+      print('-------------\nGUESSED in $attempt try\nThe Word is $word');
+      break;
+    }
+  }
+}
+
 void main() {
-  exercise22();
+  exercise24();
 }
