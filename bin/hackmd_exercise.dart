@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:convert';
 
 void pass() {}
 void exercise1() {
@@ -533,7 +534,8 @@ void exercise24() {
 
   String word = 'EVAPORATE';
   List<String> wordAsLetter = word.split('');
-  List<String> guessedLetter = List.generate(wordAsLetter.length, (empty) => '_');
+  List<String> guessedLetter =
+      List.generate(wordAsLetter.length, (empty) => '_');
 
   while (!isGuessed) {
     attempt += 1;
@@ -565,6 +567,150 @@ void exercise24() {
   }
 }
 
+void exercise25() {
+  int maxAttempt = 6;
+  int attempt = 0;
+
+  File file = File('bin/words.txt');
+  List<String> words = file.readAsLinesSync();
+  Random random = Random();
+
+  String guess = '';
+  String word = words[random.nextInt(words.length)].toUpperCase();
+  List<String> wordAsLetter = word.split('');
+  List<String> guessedLetter = List.generate(word.length, (empty) => '_');
+  print(word);
+
+  while (true) {
+    if (attempt == maxAttempt) {
+      print('----------------------------------------');
+      print('You dont have any incorrect guesses left');
+      print('The word is : $word');
+      break;
+    } else {
+      attempt += 1;
+      stdout.write('[]Guess the word => ');
+      guess = stdin.readLineSync()!.toUpperCase();
+
+      if (guess == word) {
+        print('Guessed in $attempt attempt, the word is $guess');
+        break;
+      } else if (guess.length > 1 ||
+          !wordAsLetter.contains(guess) ||
+          guess.isEmpty) {
+        print('Incorrect guess, you have ${maxAttempt - attempt} guess left');
+      } else if (wordAsLetter.contains(guess)) {
+        if (guessedLetter.contains(guess)) {
+          print('You already guessed this letter');
+          attempt -= 1;
+        } else {
+          for (var i = 0; i < wordAsLetter.length; i += 1) {
+            if (wordAsLetter[i] == guess) {
+              guessedLetter[i] = guess;
+            }
+          }
+          print(
+              '${guessedLetter.join(' ')} | ${maxAttempt - attempt} guess left');
+        }
+      }
+      if (guessedLetter.join('') == word) {
+        print('Guessed in $attempt attempt, the word is $guess');
+        break;
+      }
+    }
+  }
+}
+
+void exercise26() {
+  Map<String, String> data = {
+    'Galileo Galilei': '15/2/1564',
+    'Isaac Newton': '25/12/1642',
+    'Marie Curle': '7/11/1867',
+    'Edwin Hubble': '20/11/1889'
+  };
+  print('Welcome to the birthday dictionary. We know the birthdays of: ');
+  data.keys.toList().forEach((name) => print('>> $name'));
+  while (true) {
+    stdout.write('Who${"'"}s birthday do you want to look up?: ');
+    String name = stdin.readLineSync()!;
+    if (data.containsKey(name)) {
+      print('${name} => ${data[name]}');
+    }
+  }
+}
+
+void exercise2728() {
+  Map<int, String> birthday = {
+    1: 'January',
+    2: 'February',
+    3: 'March',
+    4: 'April',
+    5: 'May'
+  };
+
+  String jsonFileDir = 'bin/birthday.json';
+  String jsonFile = File(jsonFileDir).readAsStringSync();
+  Map data = jsonDecode(jsonFile);
+
+  void showAvailableBirthday() {
+    print('--------------------------------------------------------------');
+    print('Welcome to the birthday dictionary. We know the birthdays of: ');
+    data.forEach((key, value) {
+      print('->$key');
+    });
+    print('Other Function : add, delete, count');
+  }
+
+  void showBirthday(String name) {
+    print('=>------------------------');
+    print('=>${name} => ${data[name]}');
+  }
+
+  void addBirthday() {
+    print('--------------------------------------');
+    print('Enter name and birthday day (dd/mm/yy)');
+    String name = stdin.readLineSync()!;
+    String date = stdin.readLineSync()!;
+    data[name] = date;
+    File(jsonFileDir).writeAsStringSync(jsonEncode(data));
+  }
+
+  void countBirthday() {
+    Map<String, int> counted = {};
+    data.forEach((key, value) {
+      var month = birthday[int.parse(value.toString().split('/')[1])]!;
+      counted.update(month, (value) => value + 1, ifAbsent: () => 1);
+    });
+    print(counted);
+  }
+
+  void deleteBirthday() {
+    print('--------------------------------------');
+    print('Enter name to be deleted');
+    String name = stdin.readLineSync()!;
+    data.remove(name);
+    File(jsonFileDir).writeAsStringSync(jsonEncode(data));
+  }
+
+  while (true) {
+    showAvailableBirthday();
+    stdout.write('Who${"'"}s birthday do you want to look up?: ');
+    String user = stdin.readLineSync()!;
+
+    if (data.containsKey(user)) {
+      showBirthday(user);
+    } else if (user.toLowerCase() == 'exit') {
+      exit(0);
+    } else if (user.toLowerCase() == 'add') {
+      addBirthday();
+    } else if (user.toLowerCase() == 'delete') {
+      deleteBirthday();
+    } else if (user.toLowerCase() == 'count') {
+      countBirthday();
+    }
+  }
+}
+
 void main() {
-  exercise24();
+  exercise2728();
 }
